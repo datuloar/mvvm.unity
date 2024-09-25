@@ -6,27 +6,30 @@ namespace mvvm.unity.Samples
 {
     public class EntryPoint : MonoBehaviour
     {
-        [SerializeField] private Window _coinsWindow;
+        [SerializeField] private View _coinsView;
 
-        private WindowsManager<SampleWindowType> _windowsManager;
+        private ViewsManager<SampleViewType> _viewsManager;
 
         private async void Start()
         {
-            var windows = new Dictionary<SampleWindowType, IWindow>()
+            var viewsMap = new Dictionary<SampleViewType, IView>()
             {
-                { SampleWindowType.Coin, _coinsWindow },
+                { SampleViewType.Coin, _coinsView },
             };
 
-            var windowsProvider = new WindowsProvider<SampleWindowType>(windows);
-            _windowsManager = new WindowsManager<SampleWindowType>(windowsProvider);
+            var viewsProvider = new ViewsProvider<SampleViewType>(viewsMap);
+            _viewsManager = new ViewsManager<SampleViewType>(viewsProvider);
 
             var coinCounterViewModel = new CoinCounterViewModel(new CoinsCounterModel());
-            await _windowsManager.BindAndShowAsync(SampleWindowType.Coin, coinCounterViewModel);
+            await _viewsManager.BindAndShowAsync(SampleViewType.Coin, coinCounterViewModel);
         }
 
         private async void OnDestroy()
         {
-            await _windowsManager.HideAndUnbindAsync(SampleWindowType.Coin);
+            if (_viewsManager == null)
+                return;
+
+            await _viewsManager.HideAndUnbindAsync(SampleViewType.Coin);
         }
     }
 }

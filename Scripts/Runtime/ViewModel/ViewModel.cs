@@ -38,9 +38,9 @@ namespace mvvm.unity.Core
 
             foreach (var method in type.GetMethods())
             {
-                if (_cachedCommandsMap.TryGetValue(method, out var command))
+                if (_cachedCommandsMap.TryGetValue(method, out var cachedCommand))
                 {
-                    yield return command;
+                    yield return cachedCommand;
                     continue;
                 }
 
@@ -48,9 +48,9 @@ namespace mvvm.unity.Core
 
                 if (bindableCommand != null)
                 {
-                    command = new Command(this, method, bindableCommand.Key ?? method.Name);
-                    _cachedCommandsMap[method] = command;
-                    yield return command;
+                    cachedCommand = new Command(this, method, bindableCommand.Key ?? method.Name);
+                    _cachedCommandsMap[method] = cachedCommand;
+                    yield return cachedCommand;
                 }
             }
         }

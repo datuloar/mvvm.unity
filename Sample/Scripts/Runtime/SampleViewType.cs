@@ -1,6 +1,6 @@
 ﻿namespace mvvm.unity.Samples
 {
-    public enum SampleWindowType : byte
+    public enum SampleViewType : byte
     {
         None = 0,
         Coin = 1,
