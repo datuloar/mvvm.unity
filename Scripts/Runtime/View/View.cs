@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace mvvm.unity.Core
 {
-    public class View : MonoBehaviour
+    public class View : MonoBehaviour, IView
     {
         private const string BindableButtonPrefix = "[BindableBtn]";
         private const string BindableTextPrefix = "[BindableTxt]";
@@ -46,6 +46,8 @@ namespace mvvm.unity.Core
             _sliders = GetComponentsInChildren<Slider>()
                 .Where(s => s.name.StartsWith(BindableSliderPrefix))
                 .ToList();
+
+            OnValidateOverride();
         }
 
         public void Initialize()
@@ -71,5 +73,7 @@ namespace mvvm.unity.Core
         protected virtual async Task OnShowAsync() { }
 
         protected virtual async Task OnHideAsync() { }
+
+        protected virtual void OnValidateOverride() { }
     }
 }

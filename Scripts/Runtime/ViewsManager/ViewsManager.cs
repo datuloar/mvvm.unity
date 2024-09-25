@@ -5,30 +5,28 @@ using System.Threading.Tasks;
 
 namespace mvvm.unity.Core
 {
-    public class WindowsManager<T> where T : Enum
+    public class ViewsManager<T> where T : Enum
     {
-        private readonly IWindowsProvider<T> _windowsProvider;
-        private readonly Dictionary<IWindow, Binder> _windowBinders = new();
+        private readonly IReadOnlyDictionary<T, IView> _views;
+        private readonly Dictionary<IView, Binder> _boundViews = new();
 
-        public WindowsManager(IWindowsProvider<T> windowsProvider)
+        public ViewsManager(IViewsProvider<T> viewsProvider)
         {
-            _windowsProvider = windowsProvider;
+            _views = viewsProvider.GetViews();
         }
 
-        public async Task BindAndShowAsync<TModel>(T windowType, TModel model) where TModel : ViewModel
+        public async Task BindAndShowAsync<TModel>(T windowType, TModel model) where TModel : IViewModel
         {
-            var windows = _windowsProvider.GetWindows();
-
-            if (windows.TryGetValue(windowType, out var window))
+            if (_views.TryGetValue(windowType, out var window))
             {
-                if (window is View view)
+                if (window is IView view)
                 {
                     view.Initialize();
 
                     var binder = new Binder(view, model);
 
                     binder.Bind();
-                    _windowBinders[window] = binder;
+                    _boundViews[window] = binder;
 
                     await window.ShowAsync();
                 }
@@ -45,16 +43,14 @@ namespace mvvm.unity.Core
 
         public async Task HideAndUnbindAsync(T windowType)
         {
-            var windows = _windowsProvider.GetWindows();
-
-            if (windows.TryGetValue(windowType, out var window))
+            if (_views.TryGetValue(windowType, out var window))
             {
                 await window.HideAsync();
 
-                if (_windowBinders.TryGetValue(window, out var binder))
+                if (_boundViews.TryGetValue(window, out var binder))
                 {
                     binder.Unbind();
-                    _windowBinders.Remove(window);
+                    _boundViews.Remove(window);
                 }
             }
             else

@@ -8,15 +8,15 @@ namespace mvvm.unity.Core
 {
     public class Binder
     {
-        private readonly View _view;
-        private readonly ViewModel _viewModel;
+        private readonly IView _view;
+        private readonly IViewModel _viewModel;
 
         private readonly Dictionary<Button, ICommand> _buttonCommandMap = new();
         private readonly Dictionary<TMP_Text, IProperty> _textPropertyMap = new();
         private readonly Dictionary<Image, IProperty> _imagePropertyMap = new();
         private readonly Dictionary<Slider, IProperty> _sliderPropertyMap = new();
 
-        public Binder(View view, ViewModel viewModel)
+        public Binder(IView view, IViewModel viewModel)
         {
             _view = view;
             _viewModel = viewModel;
@@ -24,53 +24,62 @@ namespace mvvm.unity.Core
 
         public void Bind()
         {
+            var commands = _viewModel.GetCommands().ToDictionary(cmd => cmd.Name);
+            var properties = _viewModel.GetProperties().ToDictionary(prop => prop.Name);
+
+            BindButtons(commands);
+            BindTexts(properties);
+            BindImages(properties);
+            BindSliders(properties);
+        }
+
+        private void BindButtons(Dictionary<string, ICommand> commands)
+        {
             foreach (var button in _view.Buttons)
             {
-                var command = _viewModel.GetCommands().FirstOrDefault(cmd => cmd.Name == button.Key);
-
-                if (command != null)
+                if (commands.TryGetValue(button.Key, out var command))
                 {
                     _buttonCommandMap[button.Value] = command;
                     button.Value.onClick.AddListener(() => command.Execute());
                 }
             }
+        }
 
+        private void BindTexts(Dictionary<string, IProperty> properties)
+        {
             foreach (var text in _view.Texts)
             {
-                var property = _viewModel.GetProperties().FirstOrDefault(prop => prop.Name == text.Key);
-
-                if (property != null)
+                if (properties.TryGetValue(text.Key, out var property))
                 {
                     _textPropertyMap[text.Value] = property;
                     UpdateTextBinding(text.Value, property);
-
-                    property.Changed += value => UpdateTextBinding(text.Value, property);
+                    property.Changed += _ => UpdateTextBinding(text.Value, property);
                 }
             }
+        }
 
+        private void BindImages(Dictionary<string, IProperty> properties)
+        {
             foreach (var image in _view.Images)
             {
-                var property = _viewModel.GetProperties().FirstOrDefault(prop => prop.Name == image.Key);
-
-                if (property != null)
+                if (properties.TryGetValue(image.Key, out var property))
                 {
                     _imagePropertyMap[image.Value] = property;
                     UpdateImageBinding(image.Value, property);
-
-                    property.Changed += value => UpdateImageBinding(image.Value, property);
+                    property.Changed += _ => UpdateImageBinding(image.Value, property);
                 }
             }
+        }
 
+        private void BindSliders(Dictionary<string, IProperty> properties)
+        {
             foreach (var slider in _view.Sliders)
             {
-                var property = _viewModel.GetProperties().FirstOrDefault(prop => prop.Name == slider.Key);
-
-                if (property != null)
+                if (properties.TryGetValue(slider.Key, out var property))
                 {
                     _sliderPropertyMap[slider.Value] = property;
                     UpdateSliderBinding(slider.Value, property);
-
-                    property.Changed += value => UpdateSliderBinding(slider.Value, property);
+                    property.Changed += _ => UpdateSliderBinding(slider.Value, property);
                     slider.Value.onValueChanged.AddListener(value => property.Set(value));
                 }
             }
@@ -82,16 +91,13 @@ namespace mvvm.unity.Core
                 button.onClick.RemoveAllListeners();
 
             foreach (var textPropertyPair in _textPropertyMap)
-                textPropertyPair.Value.Changed -= value =>
-                    UpdateTextBinding(textPropertyPair.Key, textPropertyPair.Value);
+                textPropertyPair.Value.Changed -= _ => UpdateTextBinding(textPropertyPair.Key, textPropertyPair.Value);
 
             foreach (var imagePropertyPair in _imagePropertyMap)
-                imagePropertyPair.Value.Changed -= value =>
-                    UpdateImageBinding(imagePropertyPair.Key, imagePropertyPair.Value);
+                imagePropertyPair.Value.Changed -= _ => UpdateImageBinding(imagePropertyPair.Key, imagePropertyPair.Value);
 
             foreach (var sliderPropertyPair in _sliderPropertyMap)
-                sliderPropertyPair.Value.Changed -= value =>
-                    UpdateSliderBinding(sliderPropertyPair.Key, sliderPropertyPair.Value);
+                sliderPropertyPair.Value.Changed -= _ => UpdateSliderBinding(sliderPropertyPair.Key, sliderPropertyPair.Value);
 
             _buttonCommandMap.Clear();
             _textPropertyMap.Clear();
@@ -101,16 +107,12 @@ namespace mvvm.unity.Core
 
         private void UpdateTextBinding(TMP_Text text, IProperty property)
         {
-            if (property.Get() is string newText)
-                text.text = newText;
-            else
-                text.text = property.Get()?.ToString() ?? string.Empty;
+            text.text = property.Get()?.ToString() ?? string.Empty;
         }
 
         private void UpdateImageBinding(Image image, IProperty property)
         {
-            if (property.Get() is Sprite newSprite)
-                image.sprite = newSprite;
+            image.sprite = property.Get() as Sprite;
         }
 
         private void UpdateSliderBinding(Slider slider, IProperty property)

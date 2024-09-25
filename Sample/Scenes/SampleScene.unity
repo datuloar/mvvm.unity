@@ -729,7 +729,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8757c2a65159fcb40a71aea8cbe27d69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _coinsWindow: {fileID: 2052602146}
+  _coinsView: {fileID: 2052602146}
 --- !u!4 &562623803
 Transform:
   m_ObjectHideFlags: 0
@@ -828,7 +828,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2052602145
 RectTransform:
   m_ObjectHideFlags: 0
@@ -860,12 +860,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 2052602144}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa809913c82077b45987dc209080a026, type: 3}
+  m_Script: {fileID: 11500000, guid: 75f9a34f875c6c84aab7ed99a46257c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _images: []
   _texts:
-  - {fileID: 0}
+  - {fileID: 404327860}
   _buttons:
   - {fileID: 343599239}
   _sliders: []
