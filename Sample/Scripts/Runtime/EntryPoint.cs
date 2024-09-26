@@ -10,7 +10,7 @@ namespace mvvm.unity.Samples
     {
         [SerializeField] private View _coinsView;
 
-        private ViewBindManager<SampleViewType> _viewsManager;
+        private ViewsManager<SampleViewType> _viewsManager;
 
         private async void Start()
         {
@@ -20,10 +20,10 @@ namespace mvvm.unity.Samples
             };
 
             var viewsProvider = new ViewsProvider<SampleViewType>(viewsMap);
-            _viewsManager = new ViewBindManager<SampleViewType>(viewsProvider);
+            _viewsManager = new ViewsManager<SampleViewType>(viewsProvider);
 
             var coinCounterViewModel = new CoinCounterViewModel(new CoinsCounterModel());
-            await _viewsManager.BindAndShowAsync(SampleViewType.Coin, coinCounterViewModel);
+            await _viewsManager.ShowAsync(SampleViewType.Coin, coinCounterViewModel);
         }
 
         private async void OnDestroy()
@@ -31,7 +31,7 @@ namespace mvvm.unity.Samples
             if (_viewsManager == null)
                 return;
 
-            await _viewsManager.HideAndUnbindAsync(SampleViewType.Coin);
+            await _viewsManager.HideAsync(SampleViewType.Coin);
         }
     }
 }

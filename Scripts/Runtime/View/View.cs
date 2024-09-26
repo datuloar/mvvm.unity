@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace mvvm.unity.Core
