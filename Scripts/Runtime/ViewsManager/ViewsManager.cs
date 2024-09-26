@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 
 namespace mvvm.unity.Core
 {
-    public class ViewBindManager<T> where T : Enum
+    public class ViewsManager<T> where T : Enum
     {
         private readonly IReadOnlyDictionary<T, IView> _views;
 
-        public ViewBindManager(IViewsProvider<T> viewsProvider)
+        public ViewsManager(IViewsProvider<T> viewsProvider)
         {
             _views = viewsProvider.GetViews();
         }
 
-        public async Task BindAndShowAsync<TModel>(T viewType, TModel model) where TModel : IViewModel
+        public async Task ShowAsync<TModel>(T viewType, TModel model) where TModel : IViewModel
         {
             if (_views.TryGetValue(viewType, out var view))
             {
@@ -31,7 +31,7 @@ namespace mvvm.unity.Core
             }
         }
 
-        public async Task HideAndUnbindAsync(T type)
+        public async Task HideAsync(T type)
         {
             if (!_views.TryGetValue(type, out var view))
             {
