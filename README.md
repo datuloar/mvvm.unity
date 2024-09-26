@@ -8,10 +8,11 @@ This MVVM (Model-View-ViewModel) framework for Unity is designed to simplify the
 * Separation of Concerns: Keeps Views (UI) completely separate from the ViewModel (business logic). Views handle UI updates, while ViewModels deal with application logic.
 
 * Tag-Based Binding: Use custom tags on GameObjects to bind them to ViewModel properties and commands without writing additional glue code:
-- [BindableBtn] for buttons,
-- [BindableTxt] for text (TMP_Text),
-- [BindableImg] for images,
-- [BindableSldr] for sliders.
+1. [BindableBtn] for buttons,
+2. [BindableTxt] for text (TMP_Text),
+3. [BindableImg] for images,
+4. [BindableSld] for sliders.
+4. [BindableGo] for gameObjects (for SetActive).
 
 * Reactive Properties: Automatically update the UI when data in the ViewModel changes, without needing to manually update UI elements. (u can use UniRx if modify code)
 
@@ -70,4 +71,4 @@ When the button is clicked, the IncreaseCoinCount command is executed, and the t
 
 ------------------------------
 
-### If you don't understand, you can look at the example of usage in the folder `Sample`
+### If you don't understand, and u want more features, you can look at the example of usage in the folder `Sample`

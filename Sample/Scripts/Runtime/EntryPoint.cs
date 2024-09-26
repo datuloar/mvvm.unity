@@ -1,5 +1,7 @@
 ﻿using mvvm.unity.Core;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace mvvm.unity.Samples
@@ -8,7 +10,7 @@ namespace mvvm.unity.Samples
     {
         [SerializeField] private View _coinsView;
 
-        private ViewsManager<SampleViewType> _viewsManager;
+        private ViewBindManager<SampleViewType> _viewsManager;
 
         private async void Start()
         {
@@ -18,7 +20,7 @@ namespace mvvm.unity.Samples
             };
 
             var viewsProvider = new ViewsProvider<SampleViewType>(viewsMap);
-            _viewsManager = new ViewsManager<SampleViewType>(viewsProvider);
+            _viewsManager = new ViewBindManager<SampleViewType>(viewsProvider);
 
             var coinCounterViewModel = new CoinCounterViewModel(new CoinsCounterModel());
             await _viewsManager.BindAndShowAsync(SampleViewType.Coin, coinCounterViewModel);
