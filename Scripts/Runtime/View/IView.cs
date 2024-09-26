@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using TMPro;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace mvvm.unity.Core
 {
@@ -11,6 +12,7 @@ namespace mvvm.unity.Core
         IReadOnlyDictionary<string, TMP_Text> Texts { get; }
         IReadOnlyDictionary<string, Image> Images { get; }
         IReadOnlyDictionary<string, Slider> Sliders { get; }
+        IReadOnlyDictionary<string, GameObject> GameObjects { get; }
 
         void Initialize();
 
