@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace mvvm.unity.Samples
+namespace MvvmUnity.Samples
 {
     public interface ICoinsCounterModel
     {

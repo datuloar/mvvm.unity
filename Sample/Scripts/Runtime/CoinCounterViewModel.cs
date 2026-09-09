@@ -1,45 +1,40 @@
-﻿using mvvm.unity.Core;
+using MvvmUnity.Core;
 
-namespace mvvm.unity.Samples
+namespace MvvmUnity.Samples
 {
-    public class CoinCounterViewModel : ViewModel
+    public sealed class CoinCounterViewModel : ViewModel
     {
-        private ICoinsCounterModel _model;
-        private float _slider;
+        private readonly ICoinsCounterModel _model;
 
         public CoinCounterViewModel(ICoinsCounterModel model)
         {
-            _model = model;
+            _model = model ?? throw new System.ArgumentNullException(nameof(model));
+            Count = new ObservableValue<string>(Format(_model.Coins));
+            IsEven = new ObservableValue<bool>(_model.Coins % 2 == 0);
+            Slider = new ObservableValue<float>(0f);
+            Increase = new RelayCommand(() => _model.AddCoins(1));
             _model.Changed += OnCoinsChanged;
         }
 
-        ~CoinCounterViewModel()
+        public ObservableValue<string> Count { get; }
+        public ObservableValue<bool> IsEven { get; }
+        public ObservableValue<float> Slider { get; }
+        public RelayCommand Increase { get; }
+
+        protected override void OnDispose()
         {
             _model.Changed -= OnCoinsChanged;
         }
 
-        [BindableProperty] public bool IsCoinsDivideTwo => _model.Coins % 2 == 0;
-        [BindableProperty] public string CoinCount => "Coins - " + ValueFormatter.Format(_model.Coins);
-        [BindableProperty] public string SliderValue => "Slider - " + Slider;    
-        [BindableProperty] public float Slider
+        private void OnCoinsChanged(int value)
         {
-            get => _slider;
-            set
-            {
-                if (_slider != value)
-                {
-                    _slider = value;
-                    OnPropertyChanged(nameof(SliderValue));
-                }
-            }
+            Count.Value = Format(value);
+            IsEven.Value = value % 2 == 0;
         }
 
-        [BindableCommand] public void IncreaseCoinCount() => _model.AddCoins(1);
-
-        private void OnCoinsChanged(int _)
+        private static string Format(int value)
         {
-            OnPropertyChanged(nameof(CoinCount));
-            OnPropertyChanged(nameof(IsCoinsDivideTwo));
+            return "Coins — " + value;
         }
     }
 }

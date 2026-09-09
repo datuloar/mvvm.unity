@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace mvvm.unity.Samples
+namespace MvvmUnity.Samples
 {
-    public class CoinsCounterModel : ICoinsCounterModel
+    public sealed class CoinsCounterModel : ICoinsCounterModel
     {
         public int Coins { get; private set; }
 
-        public event Action<int> Changed;
+        public event Action<int> Changed = delegate { };
 
         public void AddCoins(int amount)
         {
