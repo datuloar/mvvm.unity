@@ -34,4 +34,4 @@ Errors identify the View member and are emitted before generated code changes.
 
 `nameof` makes source renames compiler-visible. Before removing or renaming View fields referenced by an old generated partial, run `Tools > MVVM > Clean Generated Bindings`. Rebuild after the source compiles. Only files carrying the package ownership header are deleted.
 
-For unusual controls, keep the generated common bindings and add an explicit `Bind` override only when the whole binding plan is genuinely custom. A small `BindingScope` extension is usually easier to reuse.
+For unusual controls, keep the generated common bindings and implement the generated `partial void BindCustom(BindingScope, TViewModel)` hook to add one-off `BindingScope` extension calls (see [Bindings.md](Bindings.md#mixing-generated-and-custom-bindings-on-the-same-view)) instead of dropping `[GenerateBindings]` for the whole View.

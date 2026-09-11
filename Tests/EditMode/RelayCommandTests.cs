@@ -46,5 +46,39 @@ namespace MvvmUnity.Tests
             Assert.AreEqual("ready", received);
             Assert.AreEqual(1, notifications);
         }
+
+        [Test]
+        public void RefreshOn_RecomputesCanExecuteWhenTriggerChangesAndStopsAfterDispose()
+        {
+            var name = new ObservableValue<string>(string.Empty);
+            var notifications = 0;
+            var command = new RelayCommand(() => { }, () => name.Value.Length > 0).RefreshOn(name);
+            command.CanExecuteChanged += () => notifications++;
+
+            name.Value = "Ivan";
+            Assert.IsTrue(command.CanExecute);
+            Assert.AreEqual(1, notifications);
+
+            command.Dispose();
+            name.Value = string.Empty;
+            Assert.AreEqual(1, notifications);
+        }
+
+        [Test]
+        public void RefreshOnT_RecomputesCanExecuteWhenTriggerChangesAndStopsAfterDispose()
+        {
+            var enabled = new ObservableValue<bool>(false);
+            var notifications = 0;
+            var command = new RelayCommand<string>(_ => { }, _ => enabled.Value).RefreshOn(enabled);
+            command.CanExecuteChanged += () => notifications++;
+
+            enabled.Value = true;
+            Assert.IsTrue(command.CanExecute("station-01"));
+            Assert.AreEqual(1, notifications);
+
+            command.Dispose();
+            enabled.Value = false;
+            Assert.AreEqual(1, notifications);
+        }
     }
 }

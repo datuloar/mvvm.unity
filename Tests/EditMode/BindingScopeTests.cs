@@ -54,6 +54,86 @@ namespace MvvmUnity.Tests
         }
 
         [Test]
+        public void Dispose_RemovesColorBinding()
+        {
+            var targetObject = new GameObject("Image", typeof(RectTransform), typeof(Image));
+            try
+            {
+                var target = targetObject.GetComponent<Image>();
+                var source = new ObservableValue<Color>(Color.white);
+                var bindings = new BindingScope();
+                bindings.Color(target, source);
+
+                source.Value = Color.red;
+                Assert.AreEqual(Color.red, target.color);
+
+                bindings.Dispose();
+                source.Value = Color.blue;
+                Assert.AreEqual(Color.red, target.color);
+            }
+            finally
+            {
+                Object.DestroyImmediate(targetObject);
+            }
+        }
+
+        [Test]
+        public void Dispose_RemovesTwoWayScrollbarBinding()
+        {
+            var targetObject = new GameObject("Scrollbar", typeof(RectTransform), typeof(Scrollbar));
+            try
+            {
+                var target = targetObject.GetComponent<Scrollbar>();
+                var source = new ObservableValue<float>(0.25f);
+                var bindings = new BindingScope();
+                bindings.Scrollbar(target, source);
+
+                source.Value = 0.5f;
+                Assert.AreEqual(0.5f, target.value);
+                target.value = 0.75f;
+                Assert.AreEqual(0.75f, source.Value);
+
+                bindings.Dispose();
+                source.Value = 0.2f;
+                Assert.AreEqual(0.75f, target.value);
+                target.value = 0.4f;
+                Assert.AreEqual(0.2f, source.Value);
+            }
+            finally
+            {
+                Object.DestroyImmediate(targetObject);
+            }
+        }
+
+        [Test]
+        public void Dispose_RemovesTwoWayDropdownBinding()
+        {
+            var targetObject = new GameObject("Dropdown", typeof(RectTransform), typeof(Dropdown));
+            try
+            {
+                var target = targetObject.GetComponent<Dropdown>();
+                target.options.Add(new Dropdown.OptionData("A"));
+                target.options.Add(new Dropdown.OptionData("B"));
+                var source = new ObservableValue<int>(0);
+                var bindings = new BindingScope();
+                bindings.Dropdown(target, source);
+
+                source.Value = 1;
+                Assert.AreEqual(1, target.value);
+                target.value = 0;
+                Assert.AreEqual(0, source.Value);
+
+                bindings.Dispose();
+                source.Value = 1;
+                Assert.AreEqual(0, target.value);
+            }
+            finally
+            {
+                Object.DestroyImmediate(targetObject);
+            }
+        }
+
+        [Test]
         public void ParameterizedCommandBinding_UsesArgumentAndStopsAfterDispose()
         {
             var targetObject = new GameObject("Button", typeof(RectTransform), typeof(Button));

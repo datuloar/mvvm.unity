@@ -396,17 +396,24 @@ namespace MvvmUnity.Editor
                 return Found(BindingTarget.Sprite, out target);
             if (typeof(Image).IsAssignableFrom(targetType) && ObservableOf(sourceType, typeof(IReadOnlyObservableValue<>), typeof(float)))
                 return Found(BindingTarget.Fill, out target);
+            if (typeof(Graphic).IsAssignableFrom(targetType) && ObservableOf(sourceType, typeof(IReadOnlyObservableValue<>), typeof(Color)))
+                return Found(BindingTarget.Color, out target);
             if (typeof(GameObject).IsAssignableFrom(targetType) && ObservableOf(sourceType, typeof(IReadOnlyObservableValue<>), typeof(bool)))
                 return Found(BindingTarget.Active, out target);
             if (typeof(CanvasGroup).IsAssignableFrom(targetType) && ObservableOf(sourceType, typeof(IReadOnlyObservableValue<>), typeof(bool)))
                 return Found(BindingTarget.Visible, out target);
             if (typeof(Slider).IsAssignableFrom(targetType) && ObservableOf(sourceType, typeof(IObservableValue<>), typeof(float)))
                 return Found(BindingTarget.Slider, out target);
+            if (typeof(Scrollbar).IsAssignableFrom(targetType) && ObservableOf(sourceType, typeof(IObservableValue<>), typeof(float)))
+                return Found(BindingTarget.Scrollbar, out target);
             if (typeof(Toggle).IsAssignableFrom(targetType) && ObservableOf(sourceType, typeof(IObservableValue<>), typeof(bool)))
                 return Found(BindingTarget.Toggle, out target);
             if ((typeof(InputField).IsAssignableFrom(targetType) || typeof(TMP_InputField).IsAssignableFrom(targetType)) &&
                 ObservableOf(sourceType, typeof(IObservableValue<>), typeof(string)))
                 return Found(BindingTarget.Input, out target);
+            if ((typeof(Dropdown).IsAssignableFrom(targetType) || typeof(TMP_Dropdown).IsAssignableFrom(targetType)) &&
+                ObservableOf(sourceType, typeof(IObservableValue<>), typeof(int)))
+                return Found(BindingTarget.Dropdown, out target);
             if (typeof(Selectable).IsAssignableFrom(targetType) && ObservableOf(sourceType, typeof(IReadOnlyObservableValue<>), typeof(bool)))
                 return Found(BindingTarget.Interactable, out target);
             target = BindingTarget.Auto;
@@ -429,6 +436,9 @@ namespace MvvmUnity.Editor
                 case BindingTarget.Sprite:
                     return typeof(Image).IsAssignableFrom(targetType) &&
                            ObservableOf(sourceType, typeof(IReadOnlyObservableValue<>), typeof(Sprite));
+                case BindingTarget.Color:
+                    return typeof(Graphic).IsAssignableFrom(targetType) &&
+                           ObservableOf(sourceType, typeof(IReadOnlyObservableValue<>), typeof(Color));
                 case BindingTarget.Active:
                     return typeof(GameObject).IsAssignableFrom(targetType) &&
                            ObservableOf(sourceType, typeof(IReadOnlyObservableValue<>), typeof(bool));
@@ -454,6 +464,12 @@ namespace MvvmUnity.Editor
                 case BindingTarget.Input:
                     return (typeof(InputField).IsAssignableFrom(targetType) || typeof(TMP_InputField).IsAssignableFrom(targetType)) &&
                            ObservableOf(sourceType, typeof(IObservableValue<>), typeof(string));
+                case BindingTarget.Dropdown:
+                    return (typeof(Dropdown).IsAssignableFrom(targetType) || typeof(TMP_Dropdown).IsAssignableFrom(targetType)) &&
+                           ObservableOf(sourceType, typeof(IObservableValue<>), typeof(int));
+                case BindingTarget.Scrollbar:
+                    return typeof(Scrollbar).IsAssignableFrom(targetType) &&
+                           ObservableOf(sourceType, typeof(IObservableValue<>), typeof(float));
                 default:
                     return false;
             }
@@ -509,7 +525,11 @@ namespace MvvmUnity.Editor
                     .Append(observation.Source).Append(", ")
                     .Append(observation.Method.Name).AppendLine(");");
             }
+            code.Append(indent).AppendLine("        BindCustom(bindings, viewModel);");
             code.Append(indent).AppendLine("    }");
+            code.Append(indent)
+                .Append("    partial void BindCustom(global::MvvmUnity.Unity.BindingScope bindings, global::")
+                .Append(TypeName(viewModelType)).AppendLine(" viewModel);");
             code.Append(indent).AppendLine("}");
             if (!string.IsNullOrEmpty(viewType.Namespace))
                 code.AppendLine("}");

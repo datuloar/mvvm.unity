@@ -1,6 +1,6 @@
 {
   "name": "com.mvvm.unity",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "displayName": "MVVM Unity",
   "description": "Typed reactive MVVM for Unity with convention-based editor-time generation, commands, snapshot Views, and zero runtime reflection.",
   "unity": "2021.3",

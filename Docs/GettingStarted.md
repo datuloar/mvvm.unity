@@ -28,6 +28,15 @@ public sealed class LoginViewModel : ViewModel
 
 ViewModels do not reference `GameObject`, uGUI, scenes, or `MonoBehaviour`. Inject models/services through constructors.
 
+To keep a command's `CanExecute` in sync with another observable without manual subscribe/unsubscribe code, chain `RefreshOn`:
+
+```csharp
+Submit = new RelayCommand(() => login.Enter(Name.Value), () => Name.Value.Length > 0)
+    .RefreshOn(Name);
+```
+
+`RelayCommand`/`RelayCommand<T>` implement `IDisposable`; dispose the command in `OnDispose` only when `RefreshOn` was used.
+
 ## View
 
 ```csharp

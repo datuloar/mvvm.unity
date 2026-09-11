@@ -4,6 +4,7 @@ namespace MvvmUnity.Unity
     {
         Text,
         Sprite,
+        Color,
         Active,
         Visible,
         Fill,
@@ -13,6 +14,8 @@ namespace MvvmUnity.Unity
         Slider,
         Toggle,
         Input,
+        Dropdown,
+        Scrollbar,
         Auto
     }
 }

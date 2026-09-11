@@ -12,6 +12,8 @@ namespace MvvmUnity.Tests.Generation
         {
             bindings.Click(_submit, viewModel.Submit);
             bindings.Observe(viewModel.Status, Render);
+            BindCustom(bindings, viewModel);
         }
+        partial void BindCustom(global::MvvmUnity.Unity.BindingScope bindings, global::MvvmUnity.Tests.Generation.IntentViewModel viewModel);
     }
 }

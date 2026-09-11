@@ -14,6 +14,8 @@ namespace MvvmUnity.Samples
             bindings.Active(_evenBadge, viewModel.IsEven);
             bindings.Slider(_slider, viewModel.Slider);
             bindings.Command(_increase, viewModel.Increase);
+            BindCustom(bindings, viewModel);
         }
+        partial void BindCustom(global::MvvmUnity.Unity.BindingScope bindings, global::MvvmUnity.Samples.CoinCounterViewModel viewModel);
     }
 }

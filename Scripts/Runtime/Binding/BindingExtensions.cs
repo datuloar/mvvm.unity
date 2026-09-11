@@ -36,6 +36,15 @@ namespace MvvmUnity.Unity
             scope.Add(source.Subscribe(value => target.sprite = value));
         }
 
+        public static void Color(
+            this BindingScope scope,
+            Graphic target,
+            IReadOnlyObservableValue<UnityEngine.Color> source)
+        {
+            Require(scope, target, source);
+            scope.Add(source.Subscribe(value => target.color = value));
+        }
+
         public static void Active(
             this BindingScope scope,
             GameObject target,
@@ -153,6 +162,33 @@ namespace MvvmUnity.Unity
         {
             Require(scope, target, source);
             TwoWay(scope, source, target.onValueChanged, target.SetTextWithoutNotify);
+        }
+
+        public static void Dropdown(
+            this BindingScope scope,
+            UnityEngine.UI.Dropdown target,
+            IObservableValue<int> source)
+        {
+            Require(scope, target, source);
+            TwoWay(scope, source, target.onValueChanged, target.SetValueWithoutNotify);
+        }
+
+        public static void Dropdown(
+            this BindingScope scope,
+            TMP_Dropdown target,
+            IObservableValue<int> source)
+        {
+            Require(scope, target, source);
+            TwoWay(scope, source, target.onValueChanged, target.SetValueWithoutNotify);
+        }
+
+        public static void Scrollbar(
+            this BindingScope scope,
+            UnityEngine.UI.Scrollbar target,
+            IObservableValue<float> source)
+        {
+            Require(scope, target, source);
+            TwoWay(scope, source, target.onValueChanged, target.SetValueWithoutNotify);
         }
 
         /// Двусторонняя связь без флага «сейчас обновляемся»: запись в вид идёт через

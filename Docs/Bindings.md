@@ -20,14 +20,17 @@ Only exact public matches are generated. An unmatched serialized field remains a
 | `Text` / `TMP_Text` | read-only observable `string` | `Text` |
 | `Image` | read-only observable `Sprite` | `Sprite` |
 | `Image` | read-only observable `float` | `Fill` |
+| `Graphic` (`Image`, `RawImage`, `Text`, `TMP_Text`, ...) | read-only observable `Color` | `Color` |
 | `GameObject` | read-only observable `bool` | `Active` |
 | `CanvasGroup` | read-only observable `bool` | `Visible` |
 | `Selectable` | read-only observable `bool` | `Interactable` |
 | `Button` | `ICommand` | `Command` |
 | `Button` | public parameterless `void` intent method | `Click` |
 | `Slider` | writable observable `float` | `Slider` |
+| `Scrollbar` | writable observable `float` | `Scrollbar` |
 | `Toggle` | writable observable `bool` | `Toggle` |
 | `InputField` / `TMP_InputField` | writable observable `string` | `Input` |
+| `Dropdown` / `TMP_Dropdown` | writable observable `int` | `Dropdown` |
 
 Use `[Bind(source, BindingTarget.X)]` when an explicit target communicates intent better.
 
@@ -85,6 +88,22 @@ public static void Dial(
 ```
 
 Never add runtime reflection or omit unsubscribe ownership.
+
+## Mixing generated and custom bindings on the same View
+
+`[GenerateBindings]` emits a `partial void BindCustom(BindingScope bindings, TViewModel viewModel);` call at the end of the generated `Bind` override. Implement it in a hand-written partial to add a one-off custom binding without giving up conventions/`[Bind]`/`[Observe]` for the rest of the View:
+
+```csharp
+public partial class SettingsPanelView
+{
+    partial void BindCustom(BindingScope bindings, SettingsViewModel viewModel)
+    {
+        bindings.Dial(_dial, viewModel.Volume);
+    }
+}
+```
+
+The hook is a no-op (and compiles away) when unimplemented, so it costs nothing on Views that only use conventions.
 
 ## Dynamic rows and command arguments
 
