@@ -2,10 +2,11 @@ using System;
 
 namespace MvvmUnity.Core
 {
-    public sealed class RelayCommand : ICommand
+    public sealed class RelayCommand : ICommand, IDisposable
     {
         private readonly Action _execute;
         private readonly Func<bool> _canExecute;
+        private readonly CompositeDisposable _triggers = new CompositeDisposable();
 
         public RelayCommand(Action execute)
             : this(execute, Always)
@@ -18,9 +19,9 @@ namespace MvvmUnity.Core
             _canExecute = canExecute ?? throw new ArgumentNullException(nameof(canExecute));
         }
 
-        public bool CanExecute => _canExecute();
+        public event Action CanExecuteChanged;
 
-        public event Action CanExecuteChanged = delegate { };
+        public bool CanExecute => _canExecute();
 
         public void Execute()
         {
@@ -28,14 +29,16 @@ namespace MvvmUnity.Core
                 _execute();
         }
 
-        public void Refresh()
+        public void Refresh() => CanExecuteChanged?.Invoke();
+
+        public RelayCommand RefreshOn<TTrigger>(IReadOnlyObservableValue<TTrigger> trigger)
         {
-            CanExecuteChanged();
+            _triggers.Add(trigger.Subscribe(_ => Refresh(), false));
+            return this;
         }
 
-        private static bool Always()
-        {
-            return true;
-        }
+        public void Dispose() => _triggers.Dispose();
+
+        private static bool Always() => true;
     }
 }

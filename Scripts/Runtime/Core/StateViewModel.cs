@@ -11,15 +11,8 @@ namespace MvvmUnity.Core
 
         public IReadOnlyObservableValue<TState> State => _state;
 
-        protected void Publish(TState state)
-        {
-            _state.Value = state;
-        }
+        protected void Publish(TState state) => _state.Value = state;
 
-        /// Для случая, когда состояние меняют на месте, а не заменяют новым экземпляром.
-        protected void Republish()
-        {
-            _state.Refresh();
-        }
+        protected void Republish() => _state.Refresh();
     }
 }

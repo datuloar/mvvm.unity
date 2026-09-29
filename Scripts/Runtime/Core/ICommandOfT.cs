@@ -2,12 +2,12 @@ using System;
 
 namespace MvvmUnity.Core
 {
-    public interface ICommand<T>
+    public interface ICommand<in T>
     {
         event Action CanExecuteChanged;
 
-        bool CanExecute(T value);
+        bool CanExecute(T argument);
 
-        void Execute(T value);
+        void Execute(T argument);
     }
 }

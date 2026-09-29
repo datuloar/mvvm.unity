@@ -1,0 +1,13 @@
+{
+    "name": "mvvm.unity.tests.fixtures",
+    "rootNamespace": "MvvmUnity.Tests.Fixtures",
+    "references": [
+        "mvvm.unity",
+        "mvvm.unity.core",
+        "UnityEngine.UI"
+    ],
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "autoReferenced": false
+}

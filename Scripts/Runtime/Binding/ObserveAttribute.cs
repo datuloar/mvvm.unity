@@ -6,8 +6,8 @@ namespace MvvmUnity.Unity
     public sealed class ObserveAttribute : Attribute
     {
         public ObserveAttribute()
+            : this(string.Empty)
         {
-            Source = string.Empty;
         }
 
         public ObserveAttribute(string source)

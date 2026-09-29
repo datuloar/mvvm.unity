@@ -13,10 +13,9 @@ namespace MvvmUnity.Core
 
         public void Dispose()
         {
-            var action = _dispose;
+            var dispose = _dispose;
             _dispose = null;
-            if (action != null)
-                action();
+            dispose?.Invoke();
         }
     }
 }

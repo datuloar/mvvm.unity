@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using MvvmUnity.Core;
 using NUnit.Framework;
 
@@ -6,28 +8,42 @@ namespace MvvmUnity.Tests
     public sealed class StateViewModelTests
     {
         [Test]
-        public void PublishReplacesSnapshotAndNotifiesObserver()
+        public void PublishReplacesSnapshot()
         {
-            var viewModel = new TestViewModel();
-            var observed = "";
-            var subscription = viewModel.State.Subscribe(value => observed = value);
+            var viewModel = new ListViewModel();
+            var received = new List<string>();
 
-            viewModel.Change("ready");
+            using (viewModel.State.Subscribe(state => received.Add(string.Join(",", state)), false))
+                viewModel.Replace(new List<string> { "a" });
 
-            Assert.AreEqual("ready", observed);
-            subscription.Dispose();
+            Assert.That(received, Is.EqualTo(new[] { "a" }));
         }
 
-        private sealed class TestViewModel : StateViewModel<string>
+        [Test]
+        public void RepublishNotifiesForInPlaceChanges()
         {
-            public TestViewModel()
-                : base("")
+            var viewModel = new ListViewModel();
+            var received = new List<string>();
+
+            using (viewModel.State.Subscribe(state => received.Add(string.Join(",", state)), false))
+                viewModel.Append("b");
+
+            Assert.That(received, Is.EqualTo(new[] { "b" }));
+        }
+
+        private sealed class ListViewModel : StateViewModel<List<string>>
+        {
+            public ListViewModel()
+                : base(new List<string>())
             {
             }
 
-            public void Change(string value)
+            public void Replace(List<string> items) => Publish(items);
+
+            public void Append(string item)
             {
-                Publish(value);
+                State.Value.Add(item);
+                Republish();
             }
         }
     }

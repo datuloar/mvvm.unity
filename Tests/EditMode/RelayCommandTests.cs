@@ -6,7 +6,7 @@ namespace MvvmUnity.Tests
     public sealed class RelayCommandTests
     {
         [Test]
-        public void Execute_RespectsCanExecute()
+        public void ExecuteRespectsCanExecute()
         {
             var enabled = false;
             var executions = 0;
@@ -16,11 +16,11 @@ namespace MvvmUnity.Tests
             enabled = true;
             command.Execute();
 
-            Assert.AreEqual(1, executions);
+            Assert.That(executions, Is.EqualTo(1));
         }
 
         [Test]
-        public void Refresh_RaisesCanExecuteNotification()
+        public void RefreshRaisesCanExecuteChanged()
         {
             var notifications = 0;
             var command = new RelayCommand(() => { });
@@ -28,23 +28,54 @@ namespace MvvmUnity.Tests
 
             command.Refresh();
 
-            Assert.AreEqual(1, notifications);
+            Assert.That(notifications, Is.EqualTo(1));
         }
 
         [Test]
-        public void ParameterizedCommand_UsesArgumentAndRaisesNotification()
+        public void RefreshOnFollowsTriggerUntilDisposed()
+        {
+            var name = new ObservableValue<string>(string.Empty);
+            var notifications = 0;
+            var command = new RelayCommand(() => { }, () => name.Value.Length > 0).RefreshOn(name);
+            command.CanExecuteChanged += () => notifications++;
+
+            name.Value = "Ivan";
+            Assert.That(command.CanExecute, Is.True);
+            Assert.That(notifications, Is.EqualTo(1));
+
+            command.Dispose();
+            name.Value = string.Empty;
+            Assert.That(notifications, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void ParameterizedCommandPassesArgument()
         {
             var received = string.Empty;
-            var notifications = 0;
             ICommand<string> command = new RelayCommand<string>(value => received = value, value => value.Length > 2);
-            command.CanExecuteChanged += () => notifications++;
 
             command.Execute("no");
             command.Execute("ready");
-            ((RelayCommand<string>)command).Refresh();
 
-            Assert.AreEqual("ready", received);
-            Assert.AreEqual(1, notifications);
+            Assert.That(received, Is.EqualTo("ready"));
+            Assert.That(command.CanExecute("no"), Is.False);
+        }
+
+        [Test]
+        public void ParameterizedRefreshOnFollowsTriggerUntilDisposed()
+        {
+            var enabled = new ObservableValue<bool>(false);
+            var notifications = 0;
+            var command = new RelayCommand<string>(_ => { }, _ => enabled.Value).RefreshOn(enabled);
+            command.CanExecuteChanged += () => notifications++;
+
+            enabled.Value = true;
+            Assert.That(command.CanExecute("station-01"), Is.True);
+            Assert.That(notifications, Is.EqualTo(1));
+
+            command.Dispose();
+            enabled.Value = false;
+            Assert.That(notifications, Is.EqualTo(1));
         }
     }
 }

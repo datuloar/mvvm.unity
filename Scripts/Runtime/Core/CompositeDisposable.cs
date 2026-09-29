@@ -12,11 +12,13 @@ namespace MvvmUnity.Core
         {
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
+
             if (_disposed)
             {
                 item.Dispose();
                 return;
             }
+
             _items.Add(item);
         }
 
@@ -24,9 +26,11 @@ namespace MvvmUnity.Core
         {
             if (_disposed)
                 return;
+
             _disposed = true;
             for (var index = _items.Count - 1; index >= 0; index--)
                 _items[index].Dispose();
+
             _items.Clear();
         }
     }

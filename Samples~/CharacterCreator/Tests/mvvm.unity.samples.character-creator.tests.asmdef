@@ -1,0 +1,26 @@
+{
+    "name": "mvvm.unity.samples.character-creator.tests",
+    "rootNamespace": "MvvmUnity.Samples.CharacterCreator.Tests",
+    "references": [
+        "mvvm.unity.core",
+        "mvvm.unity.samples.character-creator"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS",
+        "MVVM_CHARACTER_CREATOR_TESTS"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.test-framework",
+            "expression": "1.0.0",
+            "define": "MVVM_CHARACTER_CREATOR_TESTS"
+        }
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "autoReferenced": false
+}

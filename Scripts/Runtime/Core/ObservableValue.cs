@@ -5,19 +5,26 @@ namespace MvvmUnity.Core
 {
     public sealed class ObservableValue<T> : IObservableValue<T>
     {
-        private readonly IEqualityComparer<T> _equality;
+        private readonly IEqualityComparer<T> _comparer;
         private T _value;
+
+        public ObservableValue()
+            : this(default)
+        {
+        }
 
         public ObservableValue(T value)
             : this(value, EqualityComparer<T>.Default)
         {
         }
 
-        public ObservableValue(T value, IEqualityComparer<T> equality)
+        public ObservableValue(T value, IEqualityComparer<T> comparer)
         {
             _value = value;
-            _equality = equality ?? throw new ArgumentNullException(nameof(equality));
+            _comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
         }
+
+        public event Action<T> Changed;
 
         public T Value
         {
@@ -25,20 +32,16 @@ namespace MvvmUnity.Core
             set => Set(value);
         }
 
-        public event Action<T> Changed = delegate { };
-
         public bool Set(T value)
         {
-            if (_equality.Equals(_value, value))
+            if (_comparer.Equals(_value, value))
                 return false;
+
             _value = value;
-            Changed(value);
+            Changed?.Invoke(value);
             return true;
         }
 
-        public void Refresh()
-        {
-            Changed(_value);
-        }
+        public void Refresh() => Changed?.Invoke(_value);
     }
 }

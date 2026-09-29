@@ -1,3 +1,6 @@
+using System;
+using System.ComponentModel;
+
 using MvvmUnity.Core;
 using UnityEngine;
 
@@ -15,53 +18,62 @@ namespace MvvmUnity.Unity
         public void SetViewModel(TViewModel viewModel, bool ownsViewModel = false)
         {
             if (viewModel == null)
-                throw new System.ArgumentNullException(nameof(viewModel));
+                throw new ArgumentNullException(nameof(viewModel));
+
             Unbind();
-            if (_ownsViewModel && _viewModel != null)
-                _viewModel.Dispose();
+            if (!ReferenceEquals(_viewModel, viewModel))
+                ReleaseViewModel();
+
             _viewModel = viewModel;
             _ownsViewModel = ownsViewModel;
             if (isActiveAndEnabled)
-                Bind();
+                Rebind();
         }
 
         protected virtual void Bind(BindingScope bindings, TViewModel viewModel)
         {
         }
 
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        protected virtual void BindGenerated(BindingScope bindings, TViewModel viewModel)
+        {
+        }
+
         protected virtual void OnEnable()
         {
             if (_viewModel != null)
-                Bind();
+                Rebind();
         }
 
-        protected virtual void OnDisable()
-        {
-            Unbind();
-        }
+        protected virtual void OnDisable() => Unbind();
 
         protected virtual void OnDestroy()
         {
             Unbind();
-            if (_ownsViewModel && _viewModel != null)
-                _viewModel.Dispose();
+            ReleaseViewModel();
             _viewModel = null;
-            _ownsViewModel = false;
         }
 
-        private void Bind()
+        private void Rebind()
         {
             Unbind();
             _bindings = new BindingScope();
+            BindGenerated(_bindings, _viewModel);
             Bind(_bindings, _viewModel);
         }
 
         private void Unbind()
         {
-            if (_bindings == null)
-                return;
-            _bindings.Dispose();
+            _bindings?.Dispose();
             _bindings = null;
+        }
+
+        private void ReleaseViewModel()
+        {
+            if (_ownsViewModel)
+                _viewModel?.Dispose();
+
+            _ownsViewModel = false;
         }
     }
 }

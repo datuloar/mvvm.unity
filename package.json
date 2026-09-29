@@ -1,12 +1,35 @@
 {
   "name": "com.mvvm.unity",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "displayName": "MVVM Unity",
-  "description": "Typed reactive MVVM for Unity with convention-based editor-time generation, commands, snapshot Views, and zero runtime reflection.",
-  "unity": "2021.3",
-  "unityRelease": "0f1",
+  "description": "Typed MVVM for Unity uGUI and TextMeshPro with convention-based editor-time binding generation, commands, snapshot rendering, and zero runtime reflection",
+  "unity": "2022.3",
+  "documentationUrl": "https://github.com/datuloar/mvvm.unity",
+  "changelogUrl": "https://github.com/datuloar/mvvm.unity/blob/main/CHANGELOG.md",
   "licensesUrl": "https://github.com/datuloar/mvvm.unity/blob/main/LICENSE",
-  "dependencies": {},
+  "license": "MIT",
+  "keywords": [
+    "mvvm",
+    "ui",
+    "ugui",
+    "textmeshpro",
+    "data-binding",
+    "code-generation",
+    "reactive",
+    "commands",
+    "zero-reflection",
+    "testable"
+  ],
+  "dependencies": {
+    "com.unity.ugui": "1.0.0"
+  },
+  "samples": [
+    {
+      "displayName": "Character Creator",
+      "description": "Hero creation screen covering conventions, aliases, two-way controls, commands, dynamic rows and custom bindings",
+      "path": "Samples~/CharacterCreator"
+    }
+  ],
   "author": {
     "name": "datuloar",
     "email": "datuloar@mail.ru"

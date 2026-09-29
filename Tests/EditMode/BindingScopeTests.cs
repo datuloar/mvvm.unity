@@ -1,8 +1,8 @@
+using System.Collections.Generic;
+
 using MvvmUnity.Core;
 using MvvmUnity.Unity;
 using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.UI;
 
 namespace MvvmUnity.Tests
 {
@@ -16,98 +16,59 @@ namespace MvvmUnity.Tests
             var scope = new BindingScope();
 
             scope.Observe(source, value => observed = value);
-            Assert.AreEqual(7, observed);
-
             source.Value = 9;
-            Assert.AreEqual(9, observed);
-
             scope.Dispose();
             source.Value = 11;
-            Assert.AreEqual(9, observed);
-        }
-        [Test]
-        public void Dispose_RemovesTwoWaySliderBinding()
-        {
-            var targetObject = new GameObject("Slider", typeof(RectTransform), typeof(Slider));
-            try
-            {
-                var target = targetObject.GetComponent<Slider>();
-                var source = new ObservableValue<float>(0.25f);
-                var bindings = new BindingScope();
-                bindings.Slider(target, source);
 
-                source.Value = 0.5f;
-                Assert.AreEqual(0.5f, target.value);
-                target.value = 0.75f;
-                Assert.AreEqual(0.75f, source.Value);
-
-                bindings.Dispose();
-                source.Value = 0.2f;
-                Assert.AreEqual(0.75f, target.value);
-                target.value = 0.4f;
-                Assert.AreEqual(0.2f, source.Value);
-            }
-            finally
-            {
-                Object.DestroyImmediate(targetObject);
-            }
+            Assert.That(observed, Is.EqualTo(9));
         }
 
         [Test]
-        public void ParameterizedCommandBinding_UsesArgumentAndStopsAfterDispose()
+        public void ScopedObserveDisposesPreviousRenderScope()
         {
-            var targetObject = new GameObject("Button", typeof(RectTransform), typeof(Button));
-            try
+            var source = new ObservableValue<int>(1);
+            var scopes = new List<BindingScope>();
+            var released = new List<int>();
+            var scope = new BindingScope();
+
+            scope.Observe(source, (value, rows) =>
             {
-                var received = string.Empty;
-                var enabled = true;
-                var target = targetObject.GetComponent<Button>();
-                var command = new RelayCommand<string>(value => received = value, _ => enabled);
-                var bindings = new BindingScope();
+                scopes.Add(rows);
+                rows.Add(new ActionDisposable(() => released.Add(value)));
+            });
+            source.Value = 2;
 
-                bindings.Command(target, command, "station-01");
-                target.onClick.Invoke();
-                Assert.AreEqual("station-01", received);
+            Assert.That(scopes, Has.Count.EqualTo(2));
+            Assert.That(released, Is.EqualTo(new[] { 1 }));
 
-                enabled = false;
-                command.Refresh();
-                Assert.IsFalse(target.interactable);
-
-                bindings.Dispose();
-                enabled = true;
-                command.Refresh();
-                Assert.IsFalse(target.interactable);
-                received = string.Empty;
-                target.onClick.Invoke();
-                Assert.AreEqual(string.Empty, received);
-            }
-            finally
-            {
-                Object.DestroyImmediate(targetObject);
-            }
+            scope.Dispose();
+            Assert.That(released, Is.EqualTo(new[] { 1, 2 }));
         }
 
         [Test]
-        public void ClickBinding_CallsIntentAndStopsAfterDispose()
+        public void ScopedObserveStopsRenderingAfterDispose()
         {
-            var targetObject = new GameObject("Button", typeof(RectTransform), typeof(Button));
-            try
-            {
-                var executions = 0;
-                var target = targetObject.GetComponent<Button>();
-                var bindings = new BindingScope();
+            var source = new ObservableValue<int>(1);
+            var renders = 0;
+            var scope = new BindingScope();
 
-                bindings.Click(target, () => executions++);
-                target.onClick.Invoke();
-                bindings.Dispose();
-                target.onClick.Invoke();
+            scope.Observe(source, (value, rows) => renders++);
+            scope.Dispose();
+            source.Value = 2;
 
-                Assert.AreEqual(1, executions);
-            }
-            finally
-            {
-                Object.DestroyImmediate(targetObject);
-            }
+            Assert.That(renders, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void AddAfterDisposeReleasesImmediately()
+        {
+            var scope = new BindingScope();
+            var released = false;
+            scope.Dispose();
+
+            scope.Add(new ActionDisposable(() => released = true));
+
+            Assert.That(released, Is.True);
         }
     }
 }

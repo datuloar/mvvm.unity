@@ -4,9 +4,9 @@ namespace MvvmUnity.Core
 {
     public interface ICommand
     {
-        bool CanExecute { get; }
-
         event Action CanExecuteChanged;
+
+        bool CanExecute { get; }
 
         void Execute();
     }

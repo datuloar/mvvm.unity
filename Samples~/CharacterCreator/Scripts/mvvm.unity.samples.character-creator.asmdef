@@ -1,0 +1,10 @@
+{
+    "name": "mvvm.unity.samples.character-creator",
+    "rootNamespace": "MvvmUnity.Samples.CharacterCreator",
+    "references": [
+        "mvvm.unity",
+        "mvvm.unity.core",
+        "UnityEngine.UI",
+        "Unity.TextMeshPro"
+    ]
+}

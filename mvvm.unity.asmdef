@@ -1,18 +1,9 @@
 {
     "name": "mvvm.unity",
-    "rootNamespace": "",
+    "rootNamespace": "MvvmUnity.Unity",
     "references": [
-        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "mvvm.unity.core",
         "UnityEngine.UI",
-        "mvvm.unity.core"
-    ],
-    "includePlatforms": [],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+        "Unity.TextMeshPro"
+    ]
 }

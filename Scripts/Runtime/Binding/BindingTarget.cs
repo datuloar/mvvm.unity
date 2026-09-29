@@ -2,17 +2,20 @@ namespace MvvmUnity.Unity
 {
     public enum BindingTarget
     {
+        Auto,
         Text,
         Sprite,
+        Fill,
+        Color,
         Active,
         Visible,
-        Fill,
         Interactable,
         Command,
         Click,
         Slider,
+        Scrollbar,
         Toggle,
         Input,
-        Auto
+        Dropdown
     }
 }
