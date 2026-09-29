@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="Samples~/CharacterCreator/Screenshots/CharacterCreator.png" width="1100" alt="Character Creator sample built with MVVM Unity">
+  <img src="Documentation~/Images/hero.svg" width="1100" alt="MVVM Unity">
 </p>
 
 <p align="center">
@@ -28,6 +28,10 @@ Model -> ViewModel (observables, commands) -> generated bindings -> View (widget
 - **Testable.** ViewModels run in EditMode without scenes, GameObjects or mocks of Unity.
 - **Nothing at runtime.** No reflection, expression trees, polling, `Update`, `Task` or third-party reactive library. IL2CPP and AOT friendly.
 
+<p align="center">
+  <img src="Documentation~/Images/architecture.svg" width="1100" alt="MVVM Unity architecture">
+</p>
+
 ## Contents
 
 - [Install](#install)
@@ -52,6 +56,10 @@ Model -> ViewModel (observables, commands) -> generated bindings -> View (widget
 Requires Unity 2022.3 or newer with uGUI and TextMeshPro. Import the Character Creator sample from the Package Manager to see every feature in one screen.
 
 ## Two-minute start
+
+<p align="center">
+  <img src="Documentation~/Images/workflow.svg" width="1100" alt="MVVM Unity workflow">
+</p>
 
 ```csharp
 using MvvmUnity.Core;
@@ -147,6 +155,10 @@ private void Render(StatSheetState sheet, BindingScope bindings)
 A custom control needs one `BindingScope` extension that registers its own cleanup, called from a `Bind` override. See [Bindings](Documentation~/Bindings.md#custom-bindings).
 
 ## Character Creator sample
+
+<p align="center">
+  <img src="Samples~/CharacterCreator/Screenshots/CharacterCreator.png" width="1100" alt="Character Creator sample ready to create a hero">
+</p>
 
 <p align="center">
   <img src="Samples~/CharacterCreator/Screenshots/Validation.png" width="540" alt="Validation state with a missing name and unspent points">
